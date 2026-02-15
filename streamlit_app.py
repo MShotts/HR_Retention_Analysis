@@ -14,7 +14,14 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.markdown('<span style="font-size:16px; color:#FFFFFF">The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">This dataset can be found at: https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset</span>', unsafe_allow_html=True)
+st.markdown(
+    '<span style="font-size:16px; color:#FFFFFF">'
+    'This dataset can be found at: '
+    '<a href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset" '
+    'style="color:#DAF7DC; text-decoration:none;">HR Attrition Kaggle Dataset</a>'
+    '</span>',
+    unsafe_allow_html=True
+)
 
 st.markdown('<span style="font-size:16px; color:#FFFFFF">First, let\'s see what types of data is included, whether there are null values, and the uniqueness of the fields.</span>', unsafe_allow_html=True)
 
