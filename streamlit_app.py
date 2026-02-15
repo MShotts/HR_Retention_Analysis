@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -13,10 +14,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.write("The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance.")
-st.write("This dataset can be found at: https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance.</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">This dataset can be found at: https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset</span>', unsafe_allow_html=True)
 
-st.write("First, let's see what types of data is included, whether there are null values, and the uniqueness of the fields.")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">First, let\'s see what types of data is included, whether there are null values, and the uniqueness of the fields.</span>', unsafe_allow_html=True)
 
 HR_df = pd.read_csv('data/WA_Fn-UseC_-HR-Employee-Attrition.csv')
 
@@ -30,22 +31,22 @@ info_df = pd.DataFrame({
 })
 st.dataframe(info_df, use_container_width=True)
 
-st.write("Right away, we can see signs that the data quality is good.")
-st.write("There are no nulls in the data.")
-st.write("For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Right away, we can see signs that the data quality is good</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">There are no nulls in the data</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</span>', unsafe_allow_html=True)
 
-st.write("The data types are comprised of integers and objects. This is mixed news since we'll likely need to create nominal fields in order to include them in our analysis.")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal fields in order to include them in our analysis</span>', unsafe_allow_html=True)
 
 st.write("")
-st.write("Next up, let's see the statistical properties of the data.")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data</span>', unsafe_allow_html=True)
 st.dataframe(HR_df.describe().T.round(2), use_container_width=True, hide_index=False)
 
-st.write("EmployeeCount and StandardHours have no variability (std=0) and thus no predictive value. We'll remove them from consideration in later analyses.")
-st.write("We can see that there are survey results, possibly from a Likert scale, such as EnvironmentSatisfaction, JobInvolvement, JobSatisfaction, etc based on the min, 25%, 50%, 75%, and max increasing incrementally from 1-5 or 1-4.")
-st.write("The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding)")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">EmployeeCount and StandardHours have no variability (std=0) and thus no predictive value. We will remove them from consideration in later analyses.</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">We can see that there are survey results, possibly from a Likert scale, such as EnvironmentSatisfaction, JobInvolvement, JobSatisfaction, etc based on the min, 25%, 50%, 75%, and max increasing incrementally from 1-5 or 1-4.</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding)</span>', unsafe_allow_html=True)
 
 st.write("")
-st.write("Next, let's see how correlated these fields are. For example, I'd expect fields like Age and TotalWorkingYears to be highly correlated.")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Next, let\'s see how correlated these fields are. For example, I would expect fields like Age and TotalWorkingYears to be highly correlated.</span>', unsafe_allow_html=True)
 
 numeric_cols = HR_df.select_dtypes(include=['number']).columns.tolist()
 # Removing the two fields that have no variability
@@ -80,13 +81,6 @@ else:
     plt.tight_layout()
 
     st.pyplot(fig, use_container_width=False)
-
-
-# st.write("### Columns Detected as Numeric")
-# numeric_cols = HR_df.select_dtypes(include="number").columns.tolist()
-# st.write(numeric_cols)
-
-
 
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
