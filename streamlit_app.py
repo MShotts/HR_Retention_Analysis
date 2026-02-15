@@ -88,5 +88,8 @@ else:
 
     st.pyplot(fig, use_container_width=False)
 
+st.write("")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Stay tuned. More coming soon!</span>', unsafe_allow_html=True)
+
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
