@@ -41,15 +41,15 @@ st.markdown('<span style="font-size:16px; color:#FFFFFF">Right away, we can see 
 st.markdown('<span style="font-size:16px; color:#FFFFFF">There are no nulls in the data.</span>', unsafe_allow_html=True)
 st.markdown('<span style="font-size:16px; color:#FFFFFF">For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</span>', unsafe_allow_html=True)
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis.</span>', unsafe_allow_html=True)
 
 st.write("")
-st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data.</span>', unsafe_allow_html=True)
 st.dataframe(HR_df.describe().T.round(2), use_container_width=True, hide_index=False)
 
 st.markdown('<span style="font-size:16px; color:#FFFFFF">EmployeeCount and StandardHours have no variability (std=0) and thus no predictive value. We will remove them from consideration in later analyses.</span>', unsafe_allow_html=True)
 st.markdown('<span style="font-size:16px; color:#FFFFFF">We can see that there are survey results, possibly from a Likert scale, such as EnvironmentSatisfaction, JobInvolvement, JobSatisfaction, etc based on the min, 25%, 50%, 75%, and max increasing incrementally from 1-5 or 1-4.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding)</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding).</span>', unsafe_allow_html=True)
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next, let\'s see how correlated these fields are. For example, I would expect fields like Age and TotalWorkingYears to be highly correlated.</span>', unsafe_allow_html=True)
