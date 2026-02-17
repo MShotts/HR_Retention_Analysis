@@ -37,11 +37,11 @@ info_df = pd.DataFrame({
 })
 st.dataframe(info_df, use_container_width=True)
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">Right away, we can see signs that the data quality is good</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">There are no nulls in the data</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Right away, we can see signs that the data quality is good.</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">There are no nulls in the data.</span>', unsafe_allow_html=True)
 st.markdown('<span style="font-size:16px; color:#FFFFFF">For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</span>', unsafe_allow_html=True)
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal fields in order to include them in our analysis</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis</span>', unsafe_allow_html=True)
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data</span>', unsafe_allow_html=True)
