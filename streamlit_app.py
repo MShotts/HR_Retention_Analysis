@@ -125,6 +125,35 @@ with attr_col3:
         """, unsafe_allow_html=True)
 
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Use the slider below to select the typical number of months needed to train staff in your org and see the resulting cost.</span>', unsafe_allow_html=True)
+
+import streamlit as st
+
+# Customize the look of the slider
+st.markdown("""
+    <style>
+    /* Change slider color */
+    div[data-baseweb="slider"] > div > div > div {
+        background-color: FFFFFF !important;  /* Track color */
+    }
+    # div[data-baseweb="slider"] > div > div {
+    #     background-color: #FFFFFF !important; /* Unfilled track color */
+    # }
+    div[data-baseweb="slider"] > div > div > div > div {
+        background-color: #9EE493;  /* Thumb color */
+    }
+        div[data-baseweb="slider"] div {
+        color: #FFFFFF !important;  /* Number color */
+    }
+    div[data-baseweb="slider"] > div > div > div > div {
+        border: 3px solid #9EE493 !important; /*Border color around thumb */
+        box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+    }
+    div[data-testid="stSlider"] [data-baseweb="slider"] [data-baseweb="tick-bar"] div {
+        color: #FFFFFF !important;            /* Min/max number color */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 train_replacement_months=st.slider("",1,12)
 cost_to_retrain=yes_monthly_rate*train_replacement_months
 st.markdown(f'<span style="font-size:16px; color:#FFFFFF">'
