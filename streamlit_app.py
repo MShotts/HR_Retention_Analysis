@@ -13,10 +13,13 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance.</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:48px; color:#9EE493">**Matthew Shotts**</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:22px; color:#DAF7DC">Analysis Case Study Determining Main Drivers for Employee Attrition</span>', unsafe_allow_html=True)
+
+# st.markdown('<span style="font-size:16px; color:#FFFFFF">The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance.</span>', unsafe_allow_html=True)
 st.markdown(
     '<span style="font-size:16px; color:#FFFFFF">'
-    'This dataset can be found at: '
+    'The following analysis is of a Kaggle dataset concerning Employee Attrition & Performance. This dataset can be found at: '
     '<a href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset" '
     'style="color:#DAF7DC; text-decoration:none;">HR Attrition Kaggle Dataset</a>'
     '</span>',
@@ -31,29 +34,86 @@ HR_df = pd.read_csv('data/WA_Fn-UseC_-HR-Employee-Attrition.csv')
 info_df = pd.DataFrame({
     'Column': HR_df.columns,
     'Type': HR_df.dtypes.values,
-    'Non-Null': HR_df.count().values,
+    'Unique': HR_df.nunique().values,
     'Null': HR_df.isnull().sum().values,
-    'Unique': HR_df.nunique().values
+    'Non-Null': HR_df.count().values
 })
 st.dataframe(info_df, use_container_width=True)
 
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Right away, we can see signs that the data quality is good.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">There are no nulls in the data.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</span>', unsafe_allow_html=True)
+st.markdown("""
+<div style="font-size:16px; color:#FFFFFF;">
+    <ul>
+        <li>There are no nulls in the data.</li>
+        <li>For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</li>
+        <li>The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis.</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis.</span>', unsafe_allow_html=True)
+st.markdown("---")
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data.</span>', unsafe_allow_html=True)
-st.dataframe(HR_df.describe().T.round(2), use_container_width=True, hide_index=False)
+describe_stats=HR_df.describe().T.round(2)
+selected_describe_stats=describe_stats[['mean','std','min','max']]
 
-st.markdown('<span style="font-size:16px; color:#FFFFFF">EmployeeCount and StandardHours have no variability (std=0) and thus no predictive value. We will remove them from consideration in later analyses.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">We can see that there are survey results, possibly from a Likert scale, such as EnvironmentSatisfaction, JobInvolvement, JobSatisfaction, etc based on the min, 25%, 50%, 75%, and max increasing incrementally from 1-5 or 1-4.</span>', unsafe_allow_html=True)
-st.markdown('<span style="font-size:16px; color:#FFFFFF">The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding).</span>', unsafe_allow_html=True)
+st.dataframe(selected_describe_stats, use_container_width=True, hide_index=False)
 
+st.write("")
+
+st.markdown("""
+<div style="font-size:16px; color:#FFFFFF;">
+    <ul>
+        <li>EmployeeCount and StandardHours have no variability (std=0) and thus no predictive value. We will remove them from consideration.</li>
+        <li>We can see that there are survey results, possibly from a Likert scale, such as EnvironmentSatisfaction, JobInvolvement, JobSatisfaction, etc based on the min and max and std ~1.</li>
+        <li>The description of the Kaggle dataset explains that ratings go from low to high (i.e. 1=Low vs 4=Very High). There is no reverse scoring but it should be noted that the text descriptions do vary (Very High, Best, Outstanding).</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.write("")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Let\'s see how bad the attrition problem is by checking how much of the workforce has left.</span>', unsafe_allow_html=True)
+
+yes_count = (HR_df['Attrition'] == 'Yes').sum()
+# no_count = (HR_df['Attrition'] == 'No').sum()
+yes_monthly_rate = HR_df[HR_df['Attrition'] == 'Yes']['MonthlyRate'].sum()
+# yes_monthly_rate = (HR_df['Attrition'] == 'Yes').sum(HR_df['MonthlyRate'])
+total_count = len(HR_df)
+attrition_rate = round(((yes_count / total_count) * 100),1)
+# remained_rate = (no_count / total_count) * 100
+
+attr_col1, attr_col2, attr_col3 = st.columns(3)
+
+with attr_col1:
+    st.metric("Total Employees", f"{total_count:,}")
+with attr_col2:
+    st.metric(
+        "Left Company",
+        f"{yes_count:,}"
+    )
+with attr_col3:
+    st.metric(
+        "Percent Left Company",
+        f"{attrition_rate:,}%"
+    )
+
+st.markdown('<span style="font-size:16px; color:#DAF7DC">Use the slider below to select the typical number of months needed to train staff in your org and see the resulting cost.</span>', unsafe_allow_html=True)
+train_replacement_months=st.slider("",1,12)
+cost_to_retrain=yes_monthly_rate*train_replacement_months
+st.markdown(f'<span style="font-size:16px; color:#FFFFFF">'
+            f'It would cost **${cost_to_retrain:,}** to retrain assuming similar salaries to exiting staff members.'
+#             f'span style="font-weight:bold; font-size:18px;">{cost_to_retrain:,}</span>',
+# f' to retrain assuming similar salaries to exiting staff members.'
+            f'</span>', unsafe_allow_html=True)
+
+st.markdown("---")
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next, let\'s see how correlated these fields are. For example, I would expect fields like Age and TotalWorkingYears to be highly correlated.</span>', unsafe_allow_html=True)
 
+# Correlation function
 numeric_cols = HR_df.select_dtypes(include=['number']).columns.tolist()
 # Removing the two fields that have no variability
 # Should revise this to automatically capture any fields with std=0 and place into the array
