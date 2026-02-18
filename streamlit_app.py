@@ -51,7 +51,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
+# Create a line to break up the text
+st.markdown('<hr style="border: 1px solid #DAF7DC;">', unsafe_allow_html=True)
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next up, let\'s see the statistical properties of the data.</span>', unsafe_allow_html=True)
@@ -72,7 +73,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("---")
+# Create a line to break up the text
+st.markdown('<hr style="border: 1px solid #DAF7DC;">', unsafe_allow_html=True)
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Let\'s see how bad the attrition problem is by checking how much of the workforce has left.</span>', unsafe_allow_html=True)
@@ -86,30 +88,51 @@ attrition_rate = round(((yes_count / total_count) * 100),1)
 # remained_rate = (no_count / total_count) * 100
 
 attr_col1, attr_col2, attr_col3 = st.columns(3)
-
 with attr_col1:
-    st.metric("Total Employees", f"{total_count:,}")
+    st.markdown(f"""
+        <div style="text-align: center;">
+            <p style="color: #FFFFFF; font-size: 16px; margin-bottom: 0px;">
+                Total Employees
+            </p>
+            <h1 style="color: #FFFFFF; font-size: 18px; margin: 0; margin-top:0;">
+                {total_count}
+            </h1>
+        </div>
+        """, unsafe_allow_html=True)
+
 with attr_col2:
-    st.metric(
-        "Left Company",
-        f"{yes_count:,}"
-    )
+    st.markdown(f"""
+        <div style="text-align: center;">
+            <p style="color: #FFFFFF; font-size: 16px; margin-bottom: 0px;">
+                Left Company
+            </p>
+            <h1 style="color: #FFFFFF; font-size: 18px; margin: 0; margin-top:0;">
+                {yes_count}
+            </h1>
+        </div>
+        """, unsafe_allow_html=True)
+
 with attr_col3:
-    st.metric(
-        "Percent Left Company",
-        f"{attrition_rate:,}%"
-    )
+    st.markdown(f"""
+        <div style="text-align: center;">
+            <p style="color: #FFFFFF; font-size: 16px; margin-bottom: 0px;">
+                Percent Left Company
+            </p>
+            <h1 style="color: #FFFFFF; font-size: 18px; margin: 0; margin-top:0;">
+                {attrition_rate}%
+            </h1>
+        </div>
+        """, unsafe_allow_html=True)
 
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Use the slider below to select the typical number of months needed to train staff in your org and see the resulting cost.</span>', unsafe_allow_html=True)
 train_replacement_months=st.slider("",1,12)
 cost_to_retrain=yes_monthly_rate*train_replacement_months
 st.markdown(f'<span style="font-size:16px; color:#FFFFFF">'
-            f'It would cost **${cost_to_retrain:,}** to retrain assuming similar salaries to exiting staff members.'
-#             f'span style="font-weight:bold; font-size:18px;">{cost_to_retrain:,}</span>',
-# f' to retrain assuming similar salaries to exiting staff members.'
+            f'It would cost **${cost_to_retrain:,}** to train the incoming hires assuming similar salaries to exiting staff members.'
             f'</span>', unsafe_allow_html=True)
 
-st.markdown("---")
+# Create a line to break up the text
+st.markdown('<hr style="border: 1px solid #DAF7DC;">', unsafe_allow_html=True)
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Next, let\'s see how correlated these fields are. For example, I would expect fields like Age and TotalWorkingYears to be highly correlated.</span>', unsafe_allow_html=True)
 
