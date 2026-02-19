@@ -157,7 +157,7 @@ st.markdown("""
 train_replacement_months=st.slider("",1,12)
 cost_to_retrain=yes_monthly_rate*train_replacement_months
 st.markdown(f'<span style="font-size:16px; color:#FFFFFF">'
-            f'It would cost **${cost_to_retrain:,}** to train the incoming hires assuming similar salaries to exiting staff members. Please note these numbers should be viewed with caution. I compared hourly rate to monthly rate by multiplying 40 hours per week * 4 weeks and the values were generally lower than the monthly rate.'
+            f'It would cost **${cost_to_retrain:,}** to train the incoming hires assuming similar salaries to exiting staff members. Please note these numbers should be viewed with caution. I compared hourly rate to monthly rate by multiplying 40 hours per week * 4 weeks and the values were generally lower than the monthly rate.  It\'s possible there are additional considerations driving this difference like sales commissions or exempt employees but the provided data is insufficient to explain.'
             f'</span>', unsafe_allow_html=True)
 
 # Create a line to break up the text
