@@ -46,7 +46,7 @@ st.markdown("""
     <ul>
         <li>There are no nulls in the data.</li>
         <li>For EmployeeNumber, the counts in the Non-Null and Unique columns match which indicates that this key is unique and there is no need to create a surrogate.</li>
-        <li>The data types are comprised of integers and objects. This is mixed news since we will likely need to create nominal/ordinal fields in order to include them in our analysis.</li>
+        <li>The data types are comprised of integers and objects. This is mixed news since we\'ll need to create one-hot encoded versions of the object fields in order to include them in the analysis.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -126,9 +126,8 @@ with attr_col3:
 
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Use the slider below to select the typical number of months needed to train staff in your org and see the resulting cost.</span>', unsafe_allow_html=True)
 
-import streamlit as st
 
-# Customize the look of the slider
+# Customize the look of the slider - still unable to get rid of the red
 st.markdown("""
     <style>
     /* Change slider color */
@@ -201,7 +200,76 @@ else:
     st.pyplot(fig, use_container_width=False)
 
 st.write("")
-st.markdown('<span style="font-size:16px; color:#FFFFFF">Stay tuned. More coming soon!</span>', unsafe_allow_html=True)
+
+# Create a line to break up the text
+st.markdown('<hr style="border: 1px solid #DAF7DC;">', unsafe_allow_html=True)
+
+st.write("")
+st.markdown('<span style="font-size:16px; color:#FFFFFF">We\'re going to prepare the data for analysis by doing one-hot encoding. This process converts, for example, the gender field into two columns. Gender has responses of \'Male\' and \'Female\' so the encoding creates a column of Gender_Female and Gender_Male with a boolean to define the employee\'s gender.  This is needed 1) because models need numeric data and 2) we don\'t want to mistakenly indicate a hierarchy where none exists like we would if we created a numeric gender field and converted each gender to a number.</span>', unsafe_allow_html=True)
+# One-hot encoding
+HR_df_encoded=pd.get_dummies(HR_df)
+# Uncomment the below to show the encoding
+# st.dataframe(HR_df_encoded)
+
+# Your target column (adjust name if different)
+X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y'])
+y = HR_df['Attrition'].map({'Yes': 1, 'No': 0})
+
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Let\'s do a quick review after encoding to ensure things look good (they do).</span>', unsafe_allow_html=True)
+st.write(y.head())
+st.write(X.head())
+
+# Train/test split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Scale your features
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # transform only, never fit on test data
+
+# Train the model
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression(max_iter=1000, class_weight='balanced', random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Evaluate the model
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+y_pred = model.predict(X_test_scaled)
+y_proba = model.predict_proba(X_test_scaled)[:, 1]
+
+st.markdown('<span style="font-size:16px; color:#DAF7DC">Model Performance</span>', unsafe_allow_html=True)
+st.text(classification_report(y_test, y_pred))
+st.write("")
+st.metric("ROC-AUC Score", round(roc_auc_score(y_test, y_proba), 3))
+
+# Interpret the coefficients
+coef_df = pd.DataFrame({
+    'Feature': X.columns,
+    'Coefficient': model.coef_[0]
+}).sort_values('Coefficient', ascending=False)
+
+st.markdown('<span style="font-size:18px; color:#DAF7DC">Attrition Drivers</span>', unsafe_allow_html=True)
+# Changing the bar plot to horizontal for readability
+coef_df_sorted = coef_df.sort_values('Coefficient', ascending=True)  # ascending=True so highest is at top
+
+fig, ax = plt.subplots(figsize=(10, 8))
+ax.barh(coef_df_sorted['Feature'], coef_df_sorted['Coefficient'])
+
+for index, value in enumerate(coef_df_sorted['Coefficient']):
+    if abs(value) >= 0.4:
+        offset = 0.002 if value >= 0 else -0.002
+        ha = 'left' if value >= 0 else 'right'
+        ax.text(value + offset, index, f'{value:.3f}', va='center', ha=ha)
+
+ax.set_xlabel('Coefficient')
+ax.set_title('Attrition Drivers')
+st.pyplot(fig)
+
+st.markdown('<span style="font-size:18px; color:#FFFFFF">Stay tuned. More coming soon!</span>', unsafe_allow_html=True)
 
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
