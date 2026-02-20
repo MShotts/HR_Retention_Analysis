@@ -243,8 +243,19 @@ y_proba = model.predict_proba(X_test_scaled)[:, 1]
 
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Model Performance</span>', unsafe_allow_html=True)
 st.text(classification_report(y_test, y_pred))
+# The following formats it with color but the presentation looks awful
+# classification_report = classification_report(y_test, y_pred)
+# st.markdown(f"""
+#     <pre style='color:FFFFFF; font-size:16px;'>{classification_report}</pre>
+# """, unsafe_allow_html=True)
+
 st.write("")
-st.metric("ROC-AUC Score", round(roc_auc_score(y_test, y_proba), 3))
+# Display results with markdown
+roc_score = round(roc_auc_score(y_test, y_proba), 3)
+st.markdown(f"""
+    <p style='font-size:16px; color:#FFFFFF'>ROC-AUC Score</p>
+    <p style='font-size:16px; color:#FFFFFF; font-weight:bold;'>{roc_score}</p>
+""", unsafe_allow_html=True)
 
 # Interpret the coefficients
 coef_df = pd.DataFrame({
@@ -252,6 +263,7 @@ coef_df = pd.DataFrame({
     'Coefficient': model.coef_[0]
 }).sort_values('Coefficient', ascending=False)
 
+st.write("")
 st.markdown('<span style="font-size:18px; color:#DAF7DC">Attrition Drivers</span>', unsafe_allow_html=True)
 # Changing the bar plot to horizontal for readability
 coef_df_sorted = coef_df.sort_values('Coefficient', ascending=True)  # ascending=True so highest is at top
