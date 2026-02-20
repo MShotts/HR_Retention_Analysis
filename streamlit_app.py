@@ -295,6 +295,6 @@ ax.set_xlabel('Coefficient')
 ax.set_title('Attrition Drivers')
 st.pyplot(fig)
 
-st.markdown('<span style="font-size:18px; color:#FFFFFF">Stay tuned. More coming soon!</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:18px; color:#FFFFFF">As of now, Job Level is in the lead as the top predictor of attrition.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
