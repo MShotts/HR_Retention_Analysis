@@ -206,15 +206,29 @@ st.markdown('<hr style="border: 1px solid #DAF7DC;">', unsafe_allow_html=True)
 
 st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">We\'re going to prepare the data for analysis by doing one-hot encoding. This process converts, for example, the gender field into two columns. Gender has responses of \'Male\' and \'Female\' so the encoding creates a column of Gender_Female and Gender_Male with a boolean to define the employee\'s gender.  This is needed 1) because models need numeric data and 2) we don\'t want to mistakenly indicate a hierarchy where none exists like we would if we created a numeric gender field and converted each gender to a number.</span>', unsafe_allow_html=True)
+
+st.markdown('<span style="font-size:16px; color:#FFFFFF">Additionally, we need to address the Age field. Reducing cardinality (unique values) will strengthen our prediction so we\'re going to group ages together. We\'ll use quartiles to determine reasonable cuts.</span>', unsafe_allow_html=True)
+# Determine good age buckets based on quartiles
+quantiles = HR_df['Age'].quantile([0.25, 0.5, 0.75])
+
+st.markdown('<span style="font-size:16px; color:#DAF7DC">Age Quartiles</span>', unsafe_allow_html=True)
+st.markdown(f"<p style='color:FFFFFF;'>25th Percentile: <b>{quantiles[0.25]}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:FFFFFF;'>50th Percentile (Median): <b>{quantiles[0.50]}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:FFFFFF;'>75th Percentile: <b>{quantiles[0.75]}</b></p>", unsafe_allow_html=True)
+
+# Create the age buckets
+HR_df['Age_Bin'] = pd.cut(HR_df['Age'],
+                          bins=[18, 30, 36, 43, 100],
+                          labels=['18-30', '31-36', '37-43', '44+'])
 # One-hot encoding
 HR_df_encoded=pd.get_dummies(HR_df)
 # Uncomment the below to show the encoding
-# st.dataframe(HR_df_encoded)
 
 # Your target column (adjust name if different)
-X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y'])
+X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y','Age'])
 y = HR_df['Attrition'].map({'Yes': 1, 'No': 0})
 
+st.write("")
 st.markdown('<span style="font-size:16px; color:#FFFFFF">Let\'s do a quick review after encoding to ensure things look good (they do).</span>', unsafe_allow_html=True)
 st.write(y.head())
 st.write(X.head())
@@ -282,6 +296,5 @@ ax.set_title('Attrition Drivers')
 st.pyplot(fig)
 
 st.markdown('<span style="font-size:18px; color:#FFFFFF">Stay tuned. More coming soon!</span>', unsafe_allow_html=True)
-
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
