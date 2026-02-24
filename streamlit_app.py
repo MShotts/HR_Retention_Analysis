@@ -212,9 +212,9 @@ st.markdown('<span style="font-size:16px; color:#FFFFFF">Additionally, we need t
 quantiles = HR_df['Age'].quantile([0.25, 0.5, 0.75])
 
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Age Quartiles</span>', unsafe_allow_html=True)
-st.markdown(f"<p style='color:FFFFFF;'>25th Percentile: <b>{quantiles[0.25]}</b></p>", unsafe_allow_html=True)
-st.markdown(f"<p style='color:FFFFFF;'>50th Percentile (Median): <b>{quantiles[0.50]}</b></p>", unsafe_allow_html=True)
-st.markdown(f"<p style='color:FFFFFF;'>75th Percentile: <b>{quantiles[0.75]}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>25th Percentile: <b>{quantiles[0.25]}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>50th Percentile (Median): <b>{quantiles[0.50]}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>75th Percentile: <b>{quantiles[0.75]}</b></p>", unsafe_allow_html=True)
 
 # Create the age buckets
 HR_df['Age_Bin'] = pd.cut(HR_df['Age'],
@@ -275,22 +275,22 @@ y_pred_adjusted = (y_proba >= threshold).astype(int)
 # Should use y_pred below if not using the above threshold
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Model Performance</span>', unsafe_allow_html=True)
 accuracy=round(accuracy_score(y_test, y_pred_adjusted),3)
-st.markdown(f"<p style='color:FFFFFF;'>Accuracy: <b>{accuracy}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>Accuracy: <b>{accuracy}</b></p>", unsafe_allow_html=True)
 
 confusion=confusion_matrix(y_test, y_pred_adjusted)
-st.markdown(f"<p style='color:FFFFFF;'>Confusion Matrix: <b>{confusion}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>Confusion Matrix: <b>{confusion}</b></p>", unsafe_allow_html=True)
 
 precision=round(precision_score(y_test, y_pred_adjusted),3)
-st.markdown(f"<p style='color:FFFFFF;'>Precision Score: <b>{precision}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>Precision Score: <b>{precision}</b></p>", unsafe_allow_html=True)
 
 recall=round(recall_score(y_test, y_pred_adjusted),3)
-st.markdown(f"<p style='color:FFFFFF;'>Recall Score: <b>{recall}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>Recall Score: <b>{recall}</b></p>", unsafe_allow_html=True)
 
 f1=round(f1_score(y_test, y_pred_adjusted),3)
-st.markdown(f"<p style='color:FFFFFF;'>F1 Score: <b>{f1}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>F1 Score: <b>{f1}</b></p>", unsafe_allow_html=True)
 
 roc_score = round(roc_auc_score(y_test, y_proba), 3)
-st.markdown(f"<p style='color:FFFFFF;'>ROC-AUC Score: <b>{roc_score}</b></p>", unsafe_allow_html=True)
+st.markdown(f"<p style='color:#FFFFFF;'>ROC-AUC Score: <b>{roc_score}</b></p>", unsafe_allow_html=True)
 
 st.write("Confusion Matrix")
 st.text(confusion_matrix(y_test, y_pred_adjusted))
@@ -331,10 +331,11 @@ ax.set_title('Attrition Drivers')
 st.pyplot(fig)
 
 # Identifying fields with low coefficients
-threshold = 0.1  # adjust based on your coefficient range
-low_importance = coef_df[coef_df['Coefficient'].abs() < threshold]
-high_importance = coef_df[coef_df['Coefficient'].abs() >= threshold]
-st.markdown(f"<p style='color:FFFFFF;'>Fields not contributing to the model: <b>{low_importance}</b></p>", unsafe_allow_html=True)
+# adjust based on your coefficient range
+# threshold = 0.1
+# low_importance = coef_df[coef_df['Coefficient'].abs() < threshold]
+# high_importance = coef_df[coef_df['Coefficient'].abs() >= threshold]
+# st.markdown(f"<p style='color:#FFFFFF;'>Fields not contributing to the model: <b>{low_importance}</b></p>", unsafe_allow_html=True)
 
 
 st.markdown('<span style="font-size:18px; color:#FFFFFF">As of now, Job Level is in the lead as the top predictor of attrition. However, the precision and recall of the model, even after removing fields with low coefficients, adding SMOTE, and adjusting the decision threshold, are not good.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
