@@ -225,7 +225,12 @@ HR_df_encoded=pd.get_dummies(HR_df)
 # Uncomment the below to show the encoding
 
 # Your target column (adjust name if different)
-X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y','Age'])
+# X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y','Age','EmployeeNumber'])
+# Removal of low-performing field without SMOTE applied
+# X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y','Age','EmployeeNumber','Department_Research & Development','Gender_Male','Gender_Female','JobRole_Sales Executive','Education','EducationField_Marketing','MonthlyRate','MonthlyIncome','EducationField_Medical','MaritalStatus_Married','EducationField_Life Sciences','JobRole_Research Scientist','HourlyRate','BusinessTravel_Travel_Rarely'])
+# Removal of low-performing fields with SMOTE applied
+X = HR_df_encoded.drop(columns=['Attrition_Yes','Attrition_No','StandardHours','EmployeeCount','Over18_Y','Age','EmployeeNumber','EducationField_Technical Degree','EducationField_Medical','MonthlyRate','BusinessTravel_Travel_Rarely','EducationField_Marketing','HourlyRate','JobRole_Research Scientist','EducationField_Life Sciences','MaritalStatus_Married'])
+
 y = HR_df['Attrition'].map({'Yes': 1, 'No': 0})
 
 st.write("")
@@ -245,18 +250,54 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)  # transform only, never fit on test data
 
+# This step added to improve the accuracy of the model
+# If this is removed then switch the commented code for train the model
+from imblearn.over_sampling import SMOTE
+sm = SMOTE(random_state=42)
+X_train_resampled, y_train_resampled = sm.fit_resample(X_train_scaled, y_train)
+
 # Train the model
 from sklearn.linear_model import LogisticRegression
 model = LogisticRegression(max_iter=1000, class_weight='balanced', random_state=42)
-model.fit(X_train_scaled, y_train)
+model.fit(X_train_resampled, y_train_resampled)
+# Original model option below
+# model.fit(X_train_scaled, y_train)
 
 # Evaluate the model
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score, f1_score, roc_auc_score
 y_pred = model.predict(X_test_scaled)
 y_proba = model.predict_proba(X_test_scaled)[:, 1]
 
+# Adjust the decision threshold criteria - Taken to improve precision
+threshold = 0.706  # adjust this value
+y_pred_adjusted = (y_proba >= threshold).astype(int)
+
+# Should use y_pred below if not using the above threshold
 st.markdown('<span style="font-size:16px; color:#DAF7DC">Model Performance</span>', unsafe_allow_html=True)
-st.text(classification_report(y_test, y_pred))
+accuracy=round(accuracy_score(y_test, y_pred_adjusted),3)
+st.markdown(f"<p style='color:FFFFFF;'>Accuracy: <b>{accuracy}</b></p>", unsafe_allow_html=True)
+
+confusion=confusion_matrix(y_test, y_pred_adjusted)
+st.markdown(f"<p style='color:FFFFFF;'>Confusion Matrix: <b>{confusion}</b></p>", unsafe_allow_html=True)
+
+precision=round(precision_score(y_test, y_pred_adjusted),3)
+st.markdown(f"<p style='color:FFFFFF;'>Precision Score: <b>{precision}</b></p>", unsafe_allow_html=True)
+
+recall=round(recall_score(y_test, y_pred_adjusted),3)
+st.markdown(f"<p style='color:FFFFFF;'>Recall Score: <b>{recall}</b></p>", unsafe_allow_html=True)
+
+f1=round(f1_score(y_test, y_pred_adjusted),3)
+st.markdown(f"<p style='color:FFFFFF;'>F1 Score: <b>{f1}</b></p>", unsafe_allow_html=True)
+
+roc_score = round(roc_auc_score(y_test, y_proba), 3)
+st.markdown(f"<p style='color:FFFFFF;'>ROC-AUC Score: <b>{roc_score}</b></p>", unsafe_allow_html=True)
+
+st.write("Confusion Matrix")
+st.text(confusion_matrix(y_test, y_pred_adjusted))
+
+
+# st.markdown('<span style="font-size:16px; color:#FFFFFF">Classification report:</span>', unsafe_allow_html=True)
+# st.text(classification_report(y_test, y_pred_adjusted))
 # The following formats it with color but the presentation looks awful
 # classification_report = classification_report(y_test, y_pred)
 # st.markdown(f"""
@@ -264,12 +305,6 @@ st.text(classification_report(y_test, y_pred))
 # """, unsafe_allow_html=True)
 
 st.write("")
-# Display results with markdown
-roc_score = round(roc_auc_score(y_test, y_proba), 3)
-st.markdown(f"""
-    <p style='font-size:16px; color:#FFFFFF'>ROC-AUC Score</p>
-    <p style='font-size:16px; color:#FFFFFF; font-weight:bold;'>{roc_score}</p>
-""", unsafe_allow_html=True)
 
 # Interpret the coefficients
 coef_df = pd.DataFrame({
@@ -295,6 +330,33 @@ ax.set_xlabel('Coefficient')
 ax.set_title('Attrition Drivers')
 st.pyplot(fig)
 
-st.markdown('<span style="font-size:18px; color:#FFFFFF">As of now, Job Level is in the lead as the top predictor of attrition.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
+# Identifying fields with low coefficients
+threshold = 0.1  # adjust based on your coefficient range
+low_importance = coef_df[coef_df['Coefficient'].abs() < threshold]
+high_importance = coef_df[coef_df['Coefficient'].abs() >= threshold]
+st.markdown(f"<p style='color:FFFFFF;'>Fields not contributing to the model: <b>{low_importance}</b></p>", unsafe_allow_html=True)
+
+
+st.markdown('<span style="font-size:18px; color:#FFFFFF">As of now, Job Level is in the lead as the top predictor of attrition. However, the precision and recall of the model, even after removing fields with low coefficients, adding SMOTE, and adjusting the decision threshold, are not good.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
+
+
+# from sklearn.metrics import precision_recall_curve
+# precisions, recalls, thresholds = precision_recall_curve(y_test, y_proba)
+#
+# fig, ax = plt.subplots()
+# ax.plot(thresholds, precisions[:-1], label='Precision')
+# ax.plot(thresholds, recalls[:-1], label='Recall')
+# ax.set_xlabel('Threshold')
+# ax.set_title('Precision vs Recall by Threshold')
+# ax.legend()
+# st.pyplot(fig)
+
+# import numpy as np
+
+# Find threshold where precision and recall are most balanced
+# f1_scores = 2 * (precisions[:-1] * recalls[:-1]) / (precisions[:-1] + recalls[:-1])
+# optimal_threshold = thresholds[np.argmax(f1_scores)]
+
+# st.markdown(f"<p style='color:green;'>Optimal Threshold: <b>{optimal_threshold:.3f}</b></p>", unsafe_allow_html=True)
 
 # streamlit run C:\Users\DrShotts\PycharmProjects\Kaggle_HR_Retention\streamlit_app.py
