@@ -277,9 +277,6 @@ st.markdown('<span style="font-size:16px; color:#DAF7DC">Model Performance</span
 accuracy=round(accuracy_score(y_test, y_pred_adjusted),3)
 st.markdown(f"<p style='color:#FFFFFF;'>Accuracy: <b>{accuracy}</b></p>", unsafe_allow_html=True)
 
-confusion=confusion_matrix(y_test, y_pred_adjusted)
-st.markdown(f"<p style='color:#FFFFFF;'>Confusion Matrix: <b>{confusion}</b></p>", unsafe_allow_html=True)
-
 precision=round(precision_score(y_test, y_pred_adjusted),3)
 st.markdown(f"<p style='color:#FFFFFF;'>Precision Score: <b>{precision}</b></p>", unsafe_allow_html=True)
 
@@ -292,17 +289,8 @@ st.markdown(f"<p style='color:#FFFFFF;'>F1 Score: <b>{f1}</b></p>", unsafe_allow
 roc_score = round(roc_auc_score(y_test, y_proba), 3)
 st.markdown(f"<p style='color:#FFFFFF;'>ROC-AUC Score: <b>{roc_score}</b></p>", unsafe_allow_html=True)
 
-st.write("Confusion Matrix")
-st.text(confusion_matrix(y_test, y_pred_adjusted))
-
-
-# st.markdown('<span style="font-size:16px; color:#FFFFFF">Classification report:</span>', unsafe_allow_html=True)
-# st.text(classification_report(y_test, y_pred_adjusted))
-# The following formats it with color but the presentation looks awful
-# classification_report = classification_report(y_test, y_pred)
-# st.markdown(f"""
-#     <pre style='color:FFFFFF; font-size:16px;'>{classification_report}</pre>
-# """, unsafe_allow_html=True)
+confusion=confusion_matrix(y_test, y_pred_adjusted)
+st.markdown(f"<p style='color:#FFFFFF;'>Confusion Matrix: <b>{confusion}</b></p>", unsafe_allow_html=True)
 
 st.write("")
 
@@ -338,7 +326,7 @@ st.pyplot(fig)
 # st.markdown(f"<p style='color:#FFFFFF;'>Fields not contributing to the model: <b>{low_importance}</b></p>", unsafe_allow_html=True)
 
 
-st.markdown('<span style="font-size:18px; color:#FFFFFF">As of now, Job Level is in the lead as the top predictor of attrition. However, the precision and recall of the model, even after removing fields with low coefficients, adding SMOTE, and adjusting the decision threshold, are not good.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
+st.markdown('<span style="font-size:18px; color:#FFFFFF">We now have a model but its precision and recall, even after removing fields with low coefficients, adding SMOTE, and adjusting the decision threshold, are not good.  Stay tuned as more is coming soon!</span>', unsafe_allow_html=True)
 
 
 # from sklearn.metrics import precision_recall_curve
